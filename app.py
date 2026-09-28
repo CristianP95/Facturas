@@ -1,10 +1,8 @@
 import io
 import os
 import xmltodict
-import pandas as pd
 import streamlit as st
 
-# Funciones de extracción reutilizadas de tu script base
 def limpiar_valor(valor):
     if valor is None:
         return 'N/A'
@@ -80,7 +78,6 @@ def procesar_xml_bytes(file_bytes, filename):
 
     numero_factura = limpiar_valor(buscar_subclave(doc_node, 'ID'))
     fecha_emision = limpiar_valor(buscar_subclave(doc_node, 'IssueDate'))
-    cufe = limpiar_valor(buscar_subclave(doc_node, 'UUID'))
     
     emisor_nit = extraer_nit_tercero(buscar_subclave(buscar_subclave(doc_node, 'AccountingSupplierParty'), 'Party'))
     emisor_nombre = extraer_nombre_tercero(buscar_subclave(buscar_subclave(doc_node, 'AccountingSupplierParty'), 'Party'))
@@ -107,8 +104,6 @@ def procesar_xml_bytes(file_bytes, filename):
             'Factura_No': numero_factura,
             'Fecha': fecha_emision,
             'Emisor': emisor_nombre,
-            'NIT_Emisor': emisor_nit,
-            'Cliente': cliente_nombre,
             'Item': idx,
             'Descripcion': desc,
             'Cantidad': limpiar_valor(buscar_subclave(linea, 'InvoicedQuantity') or 1),
@@ -153,16 +148,9 @@ if uploaded_files:
         st.success(f"¡{len(resumenes_global)} factura(s) procesada(s) con éxito!")
         
         tab1, tab2 = st.tabs(["📊 Vista Resumen", "📄 Vista Detalle de Ítems"])
-        
-        df_resumen = pd.DataFrame(resumenes_global)
-        df_detalle = pd.DataFrame(detalles_global)
 
         with tab1:
-            st.dataframe(df_resumen, use_container_width=True)
-            csv_res = df_resumen.to_csv(sep='|', index=False).encode('utf-8')
-            st.download_button("📥 Descargar Reporte Resumen (.txt)", csv_res, "reporte_resumen.txt", "text/plain")
+            st.dataframe(resumenes_global, use_container_width=True)
 
         with tab2:
-            st.dataframe(df_detalle, use_container_width=True)
-            csv_det = df_detalle.to_csv(sep='|', index=False).encode('utf-8')
-            st.download_button("📥 Descargar Reporte Detalle (.txt)", csv_det, "reporte_detalle.txt", "text/plain")
+            st.dataframe(detalles_global, use_container_width=True)
