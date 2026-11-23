@@ -2,6 +2,10 @@
 
 Aplicación web en **Streamlit** que lee archivos XML de facturación electrónica colombiana (formato UBL 2.1 de la DIAN) y muestra su información en tablas estructuradas, listas para revisar o copiar a Excel.
 
+VISUALIZAR LOS DATOS
+
+Visualice los datos en Streamlit, si la App esta caída. De Click en poner en marcha esta aplicación. https://facturas-xml.streamlit.app/
+
 ## ¿Qué hace?
 
 - Permite cargar **varios archivos XML a la vez**.
